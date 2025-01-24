@@ -1,3 +1,4 @@
+
 """
 Django settings for task_management project.
 

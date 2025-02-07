@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список резюме</title>
+</head>
+<body>
+    <h2>Список загруженных резюме</h2>
+    {% for cv in cvs %}
+        <h3>{{ cv.name }}</h3>
+        <p>Email: {{ cv.email }}</p>
+        {% if cv.profile_picture %}
+            <img src="{{ cv.profile_picture.url }}" alt="Profile Picture" width="150">
+        {% else %}
+            <p>Фото не загружено</p>
+        {% endif %}
+    {% endfor %}
+
+    <form method="post" action="{% url 'share_cv_email' cv.id %}">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder="Введите email" required>
+        <button type="submit">Отправить</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NutriTrack</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Welcome, {{ user.username }}!</h1>
+    <a href="{% url 'add-food' %}" class="btn btn-primary">Add a New Food Item</a>
+    <a href="{% url 'update-goals' %}" class="btn btn-primary">Set Nutrition Goals</a>
+
+    <div class="container">
+        <h3>Your Daily Nutrition Progress</h3>
+        <canvas id="goalBarChart"></canvas>
+    </div>
+
+    <script>
+        fetch('/chart-data/')
+            .then(response => response.json())
+            .then(data => {
+                let totalCarbs = data.carbs.reduce((a, b) => a + b, 0);
+                let totalProteins = data.proteins.reduce((a, b) => a + b, 0);
+                let totalFats = data.fats.reduce((a, b) => a + b, 0);
+                let totalCalories = data.calories.reduce((a, b) => a + b, 0);
+
+                let goalCarbs = data.goal_carbs;
+                let goalProteins = data.goal_proteins;
+                let goalFats = data.goal_fats;
+                let goalCalories = data.goal_calories;
+
+                new Chart(document.getElementById('goalBarChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Carbs', 'Proteins', 'Fats', 'Calories'],
+                        datasets: [
+                            {
+                                label: 'Consumed',
+                                data: [totalCarbs, totalProteins, totalFats, totalCalories],
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                            },
+                            {
+                                label: 'Goal',
+                                data: [goalCarbs, goalProteins, goalFats, goalCalories],
+                                backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
